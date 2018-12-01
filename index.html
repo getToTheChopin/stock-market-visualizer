@@ -1,0 +1,279 @@
+<!doctype html>
+<html>
+
+<head>
+    <link href="style.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+    <h1>Stock and Bond Market Visualizer</h1>
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <div id="loadingAnimationDiv">
+        <img id="loadingAnimation" src="https://cdn.dribbble.com/users/563824/screenshots/3306683/untitled-6-110.gif">
+        <p id="loadingLabel">Loading market prices...</p>
+    </div>
+
+    <div id="mainSelectionDiv">
+        <table>
+            <tr>
+                <th id="selectionTableHeader" colspan=2>Your Selections</th>
+            </tr>
+            <tr>
+                <td>Selected Index:</td>
+                <td>
+                    <select id="indexSelection" class="userInput select-style">
+                        <option class="indexSelectionOption" value="VT">Global Stocks (FTSE Global All Cap) -- VT</option>
+                        <option class="indexSelectionOption" value="VFINX" selected>U.S. Stocks (S&P500) -- VFINX</option>
+                        <option class="indexSelectionOption" value="XIU">Canadian Stocks (TSX60) -- XIU</option>
+                        <option class="indexSelectionOption" value="VBMFX">U.S. Bonds (Govt and Corporate) -- VBMFX</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Time Period:</td>
+                <td>
+                    <select id="timePeriodSelection" class="userInput select-style">
+                        <option value="sevenDays" selected>Last Week</option>
+                        <option value="thirtyDays">Last Month</option>
+                        <option value="yearToDate">Year To Date</option>
+                        <option value="oneYear">Last Year</option>
+                        <option value="twoYears">Last 2 Years</option>
+                        <option value="threeYears">Last 3 Years</option>
+                        <option value="fiveYears">Last 5 Years</option>
+                        <option value="tenYears">Last 10 Years</option>
+                        <option value="max" selected>Max</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Use dividend adjusted prices?</td>
+                <td>
+                    <label class="switch">
+                        <input type="checkbox" class="userInput" id="dividendCheckBox"><span class="slider round"></span>
+                    </label>
+                </td>
+            </tr>
+
+        </table>
+    </div>
+
+    <div id="customTimePeriodSelectionDiv">
+        <table>
+            <tr>
+                <td>Start date:</td>
+                <td>
+                    <span class="customLabel">Year: </span><input type="number" id="startYear" class="userInput customDate" value="2016" min="1980" max="2100">
+                    <span class="customLabel">Month: </span><input type="number" id="startMonth" class="userInput customDate" value="1" min="1" max="12">
+                    <span class="customLabel">Day: </span><input type="number" id="startDay" class="userInput customDate" value="1" min="1" max="31">
+                </td>
+            </tr>
+
+            <tr>
+                <td>End date:</td>
+                <td>
+                    <span class="customLabel">Year: </span><input type="number" id="endYear" class="userInput customDate" value="2017" min="1980" max="2100">
+                    <span class="customLabel">Month: </span><input type="number" id="endMonth" class="userInput customDate" value="12" min="1" max="12">
+                    <span class="customLabel">Day: </span><input type="number" id="endDay" class="userInput customDate" value="31" min="1" max="31">  
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="errorMessageDiv">
+        <span id="errorMessage"></span>
+    </div>
+
+    &nbsp;
+
+    <h2>Price Evolution Over Time</h2>
+    <div id="priceChartDiv">
+        <canvas id="priceChart"></canvas>
+    </div>
+
+    <div id="metricOutputDiv">
+        <table>
+            <tr>
+                <th colspan=2>Summary</th>
+            </tr>
+            <tr>
+                <td id="startPriceLabel">Starting Price</td>
+                <td id="startPriceOutput"></td>
+            </tr>
+
+            <tr>
+                <td id="endPriceLabel">Ending Price</td>
+                <td id="endPriceOutput"></td>
+            </tr>
+
+            <tr>
+                <td>Price Change - $</td>
+                <td id="priceChangeOutput"></td>
+            </tr>
+
+            <tr>
+                <td>Return - %</td>
+                <td id="returnOutput"></td>
+            </tr>
+
+            <tr>
+                <td>Length of selected time period</td>
+                <td id="timePeriodOutput"></td>
+            </tr>
+
+            <tr>
+                <td>Annualized Return</td>
+                <td id="annualizedReturnOutput"></td>
+            </tr>
+        </table>
+    </div>
+    &nbsp;
+
+    <h2>Returns by Year</h2>
+
+    <div id="annualReturnsChartDiv">
+        <canvas id="annualReturnsChart"></canvas>
+    </div>
+
+    <div id="annualReturnsStatsDiv">
+        <table id="upDownYearsTable">
+            <tr>
+                <th colspan=2>Up & Down Years</th>
+            </tr>   
+            <tr>
+                <td># of Up Years (% of Total Years)</td>
+                <td id="upYearsOutput">
+
+                </td>
+            </tr>
+            <tr>
+                <td># of Down Years (% of Total Years)</td>
+                <td id="downYearsOutput">
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>Total # of Years</td>
+                <td id="totalYearsOutput">
+
+                </td>
+            </tr>
+        </table>    
+    </div>
+
+    <div id="annualReturnsChartTextDiv">
+        <p id="annualReturnsChartText"></p>
+    </div>
+    &nbsp;
+
+    <h2>Daily Return Statistics</h2>
+
+    <div id="dailyReturnsStatsDiv">
+        <table id="upDownDaysTable">
+            <tr>
+                <th colspan=2>Up & Down Days</th>
+            </tr>   
+            <tr>
+                <td># of Up Days (% of Total Days)</td>
+                <td id="upDaysOutput">
+
+                </td>
+            </tr>
+            <tr>
+                <td># of Down Days (% of Total Days)</td>
+                <td id="downDaysOutput">
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>Total # of Days</td>
+                <td id="totalDaysOutput">
+
+                </td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                <th colspan=2>Median Daily Returns</th>
+            </tr>
+            <tr>
+                <td>Median Return: Up Days</td>
+                <td id="upDaysReturnOutput">
+
+                </td>
+            </tr>
+            <tr>
+                <td>Median Return: Down Days</td>
+                <td id="downDaysReturnOutput">
+                    
+                </td>
+            </tr>
+            <tr>
+                <td>Median Return: All Days</td>
+                <td id="totalDaysReturnOutput">
+
+                </td>
+            </tr>
+        </table>
+
+        <table>
+            <tr>
+                <th colspan=2>Best and Worst Days</th>
+            </tr>
+            <tr>
+                <td>Best Single Day</td>
+                <td id="bestDayOutput">
+
+                </td>
+            </tr>
+            <tr>
+                <td>Worst Single Day</td>
+                <td id="worstDayOutput">
+                    
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <p>Note: Days with a return of zero are not included in this analysis. This is so that Saturdays, Sundays, and holidays will be removed from the data set.</p>
+    &nbsp;
+
+    <h2>Distribution of Daily Returns</h2>
+    <div id="dailyDistributionChartDiv">
+        <canvas id="dailyDistributionChart"></canvas>
+    </div>
+
+    <p>The chart above show the distribution of daily returns for the index you selected, and over the time period that you also selected. In general, you'll see that the majority of days are clustered in the -1% to +1% range. However, more extreme positive and negative values can and do occur.</p>
+
+    &nbsp;
+    <h2>The What, Why, and How</h2>
+    <p><b>What is this thing?</b> This "Stock and Bond Market Visualizer" is a tool that allows you to explore the historical returns for some of the most important investment indices in the world.</p>
+    <p><b>Why should I use this tool?</b> Sites like google finance are great for quickly finding historical market data on any index fund or individual stock. However, aside from prices, the information provided by google finance (and the like) is quite sparse. This tool gives you a deeper look at the performance of key indices like the S&P 500 and TSX 60 by showing annualized returns, returns adjusted for re-invested dividends, returns by calendar year, and daily statistics.</p>
+    <p><b>How do I use this?</b> If you came down here looking for an explanation of how to use this tool, shame on me for not laying it out in a clear enough fashion. To use this tool, go to the "Your Selections" table at the very top of the page, and click in the boxes to make your selections for the stock / bond index that you'd like to view, the time period to be considered, and if you'd like to adjust the returns to include dividends as well. Once you've made your choices, the rest of the outputs on the page will update themselves accordingly. Everything is dynamic.</p>
+    <p>A final assortment of notes:</p>
+    <ul>
+        <li>All values on this page are shown on a nominal dollar basis (i.e., not adjusted for inflation). If I manage to find a good automated way to pull current inflation data I'll likely build inflation-adjusted returns into this tool</li>
+        <li>Dividend adjusted prices assume that dividends are re-invested back into the selected index on the day that the dividends are paid</li>
+        <li>Market pricing data is sourced from google finance & yahoo finance</li>
+        <li>As you have likely noticed, this page is quite slow to load initially. This is caused by the need to pull the daily pricing and dividend info for the various indices (>100k data points). If I can make some speed improvements, I'll consider adding in a few other indices into the available list. Let me know if there are any major indices that you'd like to see here</li>
+        <li>If you think of other useful charts / outputs to add in here, please let me know in the comments below!</li>
+    </ul>
+
+
+    &nbsp;
+    <p>---</p>
+    <p><i>Header image credit: <a rel="noopener" target="_blank" href="https://blogs.cfainstitute.org/investor/2018/03/29/the-case-for-further-stock-market-gains/">CFA Institute</a></i></p>
+    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script src="indexTrackerScript.js"></script>
+
+</body>
+
+</html> 
