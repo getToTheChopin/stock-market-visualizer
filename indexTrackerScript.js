@@ -183,13 +183,13 @@ function refreshChart(){
 
 function chooseChartTitle(){
     if(indexSelection.value == "VT") {  
-        chartTitleString = "Global Stocks (FTSE Global All Cap) -- VT";
+        chartTitleString = "Global Stocks (FTSE All Cap) - VT";
     } else if(indexSelection.value == "VFINX"){
-        chartTitleString = "U.S. Stocks (S&P500) -- VFINX";
+        chartTitleString = "U.S. Stocks (S&P500) - VFINX";
     } else if(indexSelection.value == "XIU"){
-        chartTitleString = "Canadian Stocks (TSX60) -- XIU";
+        chartTitleString = "Canadian Stocks (TSX60) - XIU";
     } else {
-        chartTitleString = "U.S. Bonds (Govt and Corp) -- VBMFX"; 
+        chartTitleString = "U.S. Bonds (Govt and Corp) - VBMFX"; 
     }
 }
 
