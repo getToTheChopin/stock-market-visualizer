@@ -121,13 +121,15 @@ var medianAllReturn = 0;
 
 
 //Access google sheet spreadsheet using tabletop
-var publicSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/1b0mE5utEux3XKM9RGrffRHlER6_O6C9WbWUb7AZjZ_0/edit?usp=sharing';
+//var publicSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/1b0mE5utEux3XKM9RGrffRHlER6_O6C9WbWUb7AZjZ_0/edit?usp=sharing';
+var publicSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQFp6JvJicmWjklGr7ERaKkumTt4mk-Lrozfij34gonOph1PWLvPYm11TkvOKfctc4abGzgc86EmUlm/pub?output=csv';
 
 //main method
 chooseChartTitle();
 addInputEventListeners();
 init();
 
+/* table top is now deprecated, using papa parse instead
 function init() {
     Tabletop.init( {
         key: publicSpreadsheetUrl,
@@ -136,9 +138,20 @@ function init() {
         debug:true
     })
 }
+*/
+
+function init() {
+    Papa.parse(publicSpreadsheetUrl, {
+        download: true,
+        header: true,
+        complete: showInfo,
+    });
+}
 
 //Turn JSON from Tabletop into arrays -- generate full arrays
-function showInfo(data, tabletop) {
+function showInfo(results) {
+
+    var data = results.data
 
     //generate full arrays pulled from the master google sheets spreadsheet
     for (i=0;i<data.length;i++) {
@@ -1172,12 +1185,9 @@ function calculateAnnualReturns(){
         /* testing
         console.log("Current Year Start Date: "+currentYearStartDate);
         console.log("Current Year End Date: "+currentYearEndDate);
-
         console.log("current year start price: "+currentYearStartPrice);
         console.log("current year end price: "+currentYearEndPrice);
-
         console.log("Current Year Return :"+currentYearReturn);
-
         console.log("current days from min date: "+currentDaysFromMinDate);
         console.log("current days in period: "+currentDaysInPeriod);
         */
